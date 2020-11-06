@@ -1,0 +1,23 @@
+{
+  "name": "wk_employee_tracker",
+  "version": "1.0.0",
+  "description": "A MySQL based employee tracking CLI app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wkcodes/WK_Employee_Tracker.git"
+  },
+  "author": "Will K",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wkcodes/WK_Employee_Tracker/issues"
+  },
+  "homepage": "https://github.com/wkcodes/WK_Employee_Tracker#readme",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
+}
