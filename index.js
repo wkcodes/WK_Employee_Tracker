@@ -1,6 +1,6 @@
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
-require('dotenv').config()
+require('dotenv').config();
 
 // Configure db connection
 const db = mysql.createConnection({
@@ -98,21 +98,21 @@ function viewDatabase() {
         case "Departments":
           db.query("SELECT * FROM department", (err, rows) => {
             if (err) throw err;
-            console.log(rows);
+            console.table(rows);
             mainPrompt();
           });
           break;
         case "Employees":
           db.query("SELECT * FROM employee", (err, rows) => {
             if (err) throw err;
-            console.log(rows);
+            console.table(rows);
             mainPrompt();
           });
           break;
         case "Roles":
           db.query("SELECT * FROM roles", (err, rows) => {
             if (err) throw err;
-            console.log(rows);
+            console.table(rows);
             mainPrompt();
           });
           break;
