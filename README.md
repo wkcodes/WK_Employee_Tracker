@@ -1,3 +1,7 @@
 # WK_Employee_Tracker
 
-CLI application for tracking employees utilizing a MySQL database.
+Employee management system utilizing a MySQL database.
+
+User will need to create the database and tables with the included schema file. 
+
+Seed file included for testing. 
