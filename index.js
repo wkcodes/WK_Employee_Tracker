@@ -1,6 +1,6 @@
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
-require('dotenv').config();
+require("dotenv").config();
 
 // Configure db connection
 const db = mysql.createConnection({
@@ -10,7 +10,7 @@ const db = mysql.createConnection({
   password: process.env.PASSWORD,
   database: process.env.DATABASE,
 });
-console.log(process.env.HOST)
+console.log(process.env.HOST);
 // Make db connection.
 db.connect((err) => {
   if (err) throw err;
@@ -50,7 +50,7 @@ function addToDatabase() {
   inquirer
     .prompt({
       name: "addChoice",
-      typee: "list",
+      type: "list",
       message: "choose what you want to add: ",
       choices: ["Departments", "Employees", "Roles"],
     })
@@ -77,11 +77,17 @@ function addDepartments() {
       message: "Enter the name of your new department: ",
     })
     .then((response) => {
-      db.query("INSERT INTO department (name) values ?", { department: response.department}, (err, res) => {
-        if (err) throw err;
-        addToDatabase();
-      })
-    })
+      db.query(
+        "INSERT INTO department (name) VALUES ",
+        {
+          department: response.department,
+        },
+        (err, res) => {
+          if (err) throw err;
+          addToDatabase();
+        }
+      );
+    });
 }
 
 //Function for returning database info to the user
