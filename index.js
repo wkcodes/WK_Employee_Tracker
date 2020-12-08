@@ -80,7 +80,7 @@ function addDepartments() {
       db.query(
         "INSERT INTO department SET ?",
         {
-          department: response.department,
+          name: response.department,
         },
         (err, res) => {
           if (err) throw err;
