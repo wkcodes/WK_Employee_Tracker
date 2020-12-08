@@ -84,7 +84,7 @@ function addDepartments() {
         },
         (err, res) => {
           if (err) throw err;
-          addToDatabase();
+          mainPrompt();
         }
       );
     });
