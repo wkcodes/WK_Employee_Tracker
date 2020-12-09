@@ -1,7 +1,7 @@
 # WK_Employee_Tracker
 
-Employee management system utilizing a MySQL database.
+Employee management system utilizing a MySQL database and nodeJS.
 
 User will need to create the database and tables with the included schema file. 
 
-Seed file included for testing. 
+User will also need to create and confiure a .env file for the db connection.

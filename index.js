@@ -84,7 +84,7 @@ function addDepartment() {
         },
         (err, res) => {
           if (err) throw err;
-          console.log("New department added successfully")
+          console.log("New department added successfully");
           mainPrompt();
         }
       );
@@ -94,48 +94,65 @@ function addDepartment() {
 //Add a role to the db
 function addRole() {
   // query db for all departments
-  db.query("SELECT * FROM department", (err,results) => {
-    if(err) throw err;
+  db.query("SELECT * FROM department", (err, results) => {
+    if (err) throw err;
     // get user input for the new role
-  inquirer
-    .prompt([
-      {
-        name: "department",
-        type: "rawlist",
-        choices: ()=> {
-          let deptChoices = [];
-          for(let i = 0; i < results.length; i++) {
-            deptChoices.push(results[i].name);
-          }
-          return deptChoices;
+    inquirer
+      .prompt([
+        {
+          name: "department",
+          type: "rawlist",
+          choices: () => {
+            let deptChoices = [];
+            for (let i = 0; i < results.length; i++) {
+              deptChoices.push(results[i].name);
+            }
+            return deptChoices;
+          },
+          message: "Select department for new role: ",
         },
-        message: "Select department for new role: "
-      },
-      {
-        name: "title",
-        type: "input",
-        message: "Enter the title for new role: ",
-      },
-      {
-        name: "salary",
-        type: "input",
-        message: "Enter salary for new role: "
-      },
-
-    ])
-    .then((response) => {
-      //get id for selected department
-      console.log(response.department.choices)
-      let chosenDepartment;
-      for(i = 0; i < results.length; i++){
-
-      }
-
-    });
+        {
+          name: "title",
+          type: "input",
+          message: "Enter the title for new role: ",
+        },
+        {
+          name: "salary",
+          type: "input",
+          message: "Enter salary for new role: ",
+        },
+      ])
+      .then((response) => {
+        //query db for id
+        db.query(
+          "SELECT id FROM department WHERE ?",
+          {
+            name: response.department,
+          },
+          (err, results) => {
+            if (err) throw err;
+            //transmute query into int
+            let depID = results[0].id;
+            //add the new role to the db
+            db.query(
+              "INSERT INTO role SET ?",
+              {
+                title: response.title,
+                salary: response.salary,
+                department_id: depID,
+              },
+              (err, results) => {
+                if (err) throw err;
+                console.log("Role added successfully");
+              }
+            );
+          }
+        );
+      });
   });
 }
 
-//Add an employee to the db 
+//Add an employee to the db
 
 //Function for returning database info to the user
 function viewDatabase() {
@@ -173,9 +190,4 @@ function viewDatabase() {
     });
 }
 
-//check tables in myqsl workbench
-//run select *
-//view the data
-//add the data (querires)
-//inquiere prompts
-//inquierer.prompt
+//for view use JOIN
