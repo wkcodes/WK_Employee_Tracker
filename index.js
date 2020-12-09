@@ -10,7 +10,7 @@ const db = mysql.createConnection({
   password: process.env.PASSWORD,
   database: process.env.DATABASE,
 });
-console.log(process.env.HOST);
+
 // Make db connection.
 db.connect((err) => {
   if (err) throw err;
@@ -22,14 +22,12 @@ db.connect((err) => {
 // Main user prompt
 function mainPrompt() {
   inquirer
-    .prompt([
-      {
-        message: "What would you like to do?",
-        name: "mainChoice",
-        type: "list",
-        choices: ["Add", "View", "Update"],
-      },
-    ])
+    .prompt({
+      message: "What would you like to do?",
+      name: "mainChoice",
+      type: "list",
+      choices: ["Add", "View", "Update"],
+    })
     .then((response) => {
       switch (response.mainChoice) {
         case "Add":
@@ -45,6 +43,7 @@ function mainPrompt() {
     });
 }
 
+//Choices of what to add to the db
 function addToDatabase() {
   console.log("adding...");
   inquirer
@@ -57,19 +56,20 @@ function addToDatabase() {
     .then((response) => {
       switch (response.addChoice) {
         case "Departments":
-          addDepartments();
+          addDepartment();
           break;
         case "Employees":
-          addEmployees();
+          addEmployee();
           break;
         case "Roles":
-          addRoles();
+          addRole();
           break;
       }
     });
 }
 
-function addDepartments() {
+//Add a department to the db
+function addDepartment() {
   inquirer
     .prompt({
       name: "department",
@@ -84,11 +84,58 @@ function addDepartments() {
         },
         (err, res) => {
           if (err) throw err;
+          console.log("New department added successfully")
           mainPrompt();
         }
       );
     });
 }
+
+//Add a role to the db
+function addRole() {
+  // query db for all departments
+  db.query("SELECT * FROM department", (err,results) => {
+    if(err) throw err;
+    // get user input for the new role
+  inquirer
+    .prompt([
+      {
+        name: "department",
+        type: "rawlist",
+        choices: ()=> {
+          let deptChoices = [];
+          for(let i = 0; i < results.length; i++) {
+            deptChoices.push(results[i].name);
+          }
+          return deptChoices;
+        },
+        message: "Select department for new role: "
+      },
+      {
+        name: "title",
+        type: "input",
+        message: "Enter the title for new role: ",
+      },
+      {
+        name: "salary",
+        type: "input",
+        message: "Enter salary for new role: "
+      },
+
+    ])
+    .then((response) => {
+      //get id for selected department
+      console.log(response.department.choices)
+      let chosenDepartment;
+      for(i = 0; i < results.length; i++){
+
+      }
+
+    });
+  });
+}
+
+//Add an employee to the db 
 
 //Function for returning database info to the user
 function viewDatabase() {
@@ -116,7 +163,7 @@ function viewDatabase() {
           });
           break;
         case "Roles":
-          db.query("SELECT * FROM roles", (err, rows) => {
+          db.query("SELECT * FROM role", (err, rows) => {
             if (err) throw err;
             console.table(rows);
             mainPrompt();
