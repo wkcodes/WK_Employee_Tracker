@@ -1,3 +1,6 @@
+//This program populates an employee database via user input
+
+//Dependencies 
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
 require("dotenv").config();
@@ -45,13 +48,13 @@ function mainPrompt() {
 
 //Choices of what to add to the db
 function addToDatabase() {
-  console.log("adding...");
+  //Choices of what type of data to add
   inquirer
     .prompt({
       name: "addChoice",
       type: "list",
       message: "choose what you want to add: ",
-      choices: ["Departments", "Employees", "Roles"],
+      choices: ["Departments", "Employees", "Roles", "Main Menu"],
     })
     .then((response) => {
       switch (response.addChoice) {
@@ -63,6 +66,9 @@ function addToDatabase() {
           break;
         case "Roles":
           addRole();
+          break;
+        case "Main Menu":
+          mainPrompt();
           break;
       }
     });
@@ -85,7 +91,7 @@ function addDepartment() {
         (err, res) => {
           if (err) throw err;
           console.log("New department added successfully");
-          mainPrompt();
+          addToDatabase();
         }
       );
     });
@@ -144,6 +150,7 @@ function addRole() {
               (err, results) => {
                 if (err) throw err;
                 console.log("Role added successfully");
+                addToDatabase();
               }
             );
           }
@@ -153,6 +160,71 @@ function addRole() {
 }
 
 //Add an employee to the db
+function addEmployee() {
+  // query db for all roles
+  db.query("SELECT * FROM role", (err, results) => {
+    if (err) throw err;
+    // get user input for the new employee
+    inquirer
+      .prompt([
+        {
+          name: "role",
+          type: "rawlist",
+          choices: () => {
+            let roleChoices = [];
+            for (let i = 0; i < results.length; i++) {
+              roleChoices.push(results[i].title);
+            }
+            return roleChoices;
+          },
+          message: "Select role for new employee: ",
+        },
+        {
+          name: "firstName",
+          type: "input",
+          message: "Enter the first name for new employee: ",
+        },
+        {
+          name: "lastName",
+          type: "input",
+          message: "Enter last name for new employee: ",
+        },
+        {
+          name: "manager",
+          type: "input",
+          message: "If this employee has a manager, enter his/her name: ",
+        },
+      ])
+      .then((response) => {
+        //query db for id
+        db.query(
+          "SELECT id FROM role WHERE ?",
+          {
+            title: response.role,
+          },
+          (err, results) => {
+            if (err) throw err;
+            //transmute query into int
+            let roleID = results[0].id;
+            //add the new role to the db
+            db.query(
+              "INSERT INTO employee SET ?",
+              {
+                first_name: response.firstName,
+                last_name: response.lastName,
+                role_id: roleID,
+              },
+              (err, results) => {
+                if (err) throw err;
+                console.log("Employee added successfully");
+                addToDatabase();
+              }
+            );
+          }
+        );
+      });
+  });
+}
 
 //Function for returning database info to the user
 function viewDatabase() {
@@ -190,4 +262,4 @@ function viewDatabase() {
     });
 }
 
-//for view use JOIN
+//For future dev: use JOIN to view employees by manager
