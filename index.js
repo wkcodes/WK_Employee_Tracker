@@ -1,6 +1,6 @@
 //This program populates an employee database via user input
 
-//Dependencies 
+//Dependencies
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
 require("dotenv").config();
@@ -262,4 +262,52 @@ function viewDatabase() {
     });
 }
 
+//Function for updating employee roles
+/* function updateDatabase() {
+  //query for all employees
+  db.query("SELECT * FROM employee", (err, results) => {
+    if (err) throw err;
+    inquirer
+      .prompt({
+        name: "name",
+        type: "rawlist",
+        choices: () => {
+          let employeeChoices = [];
+          for (let i = 0; i < results.length; i++) {
+            employeeChoices.push(
+              results[i].first_name + " " + results[i].last_name
+            );
+          }
+          return employeeChoices;
+        },
+        message: "Choose employee whose role you wish to update: ",
+      })
+      .then((response) => {
+        //Seperate first and last name
+        let nameArr = response.name.split(" ");
+        let firstName = nameArr[0];
+        let lastName = nameArr[1];
+
+        db.query(
+          "SELECT id FROM employee WHERE ? AND ?",
+          [
+            {
+              first_name: firstName,
+            },
+            {
+              last_name: lastName,
+            },
+          ],
+          (err, results) => {
+            if (err){
+              console.log("Employee not found")
+            };
+            console.log(results);
+            //results is the employee id to update
+          }
+        );
+      });
+  });
+}
+ */
 //For future dev: use JOIN to view employees by manager
